@@ -104,6 +104,12 @@ public final class Message implements Serializable {
       return this;
     }
 
+    public Builder setData(Map<String,String> data) {
+      this.data.clear();
+      this.data.putAll(data);
+      return this;
+    }
+
     public Message build() {
       return new Message(this);
     }
