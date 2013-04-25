@@ -4,7 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ganyo</groupId>
     <artifactId>gcm-server</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>Google GCM Library</name>
     <description>POM created to enable maven dependency management for gcm-server</description>
     <dependencies>
         <dependency>
@@ -26,6 +28,36 @@
         </dependency>
     </dependencies>
 
+  <build>
+    <plugins>
+                  <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>bind-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
   <parent>
     <groupId>org.sonatype.oss</groupId>
     <artifactId>oss-parent</artifactId>
@@ -37,5 +69,20 @@
     <developerConnection>scm:git:git@github.com:scottganyo/gcm-server.git</developerConnection>
     <url>git@github.com:scottganyo/gcm-server.git</url>
   </scm>
+
+    <developers>
+        <developer>
+            <id>scottganyo</id>
+            <name>Scott Ganyo</name>
+            <email>scott@ganyo.com</email>
+            <url>http://ganyo.com</url>
+            <organization>Ganyo Enterprises</organization>
+            <organizationUrl>http://ganyo.com</organizationUrl>
+            <roles>
+                <role>packager</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
 
 </project>
