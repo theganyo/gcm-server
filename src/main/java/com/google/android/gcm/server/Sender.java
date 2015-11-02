@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -76,6 +77,8 @@ public class Sender {
 
   protected final Random random = new Random();
   protected final Logger logger = Logger.getLogger(getClass().getName());
+  
+  protected Proxy proxy = null;
 
   private final String key;
 
@@ -86,6 +89,11 @@ public class Sender {
    */
   public Sender(String key) {
     this.key = nonNull(key);
+  }
+  
+  public Sender(String key, Proxy proxy) {
+    this.key = nonNull(key);
+    this.proxy = proxy;
   }
 
   /**
@@ -520,7 +528,15 @@ public class Sender {
    * Gets an {@link HttpURLConnection} given an URL.
    */
   protected HttpURLConnection getConnection(String url) throws IOException {
-    HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+
+    HttpURLConnection conn;
+  
+    if (null != proxy) {
+      conn = (HttpURLConnection) new URL(url).openConnection(proxy);
+    } else {
+      conn = (HttpURLConnection) new URL(url).openConnection();
+    }
+     
     return conn;
   }
 
