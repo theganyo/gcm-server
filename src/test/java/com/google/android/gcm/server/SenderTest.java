@@ -74,7 +74,7 @@ public class SenderTest {
           .build();
 
   // creates a Mockito Spy so we can stub internal methods
-  @Spy private Sender sender = new Sender(authKey);
+  @Spy private Sender sender = new Sender(authKey, Endpoint.GCM);
 
   @Mock private HttpURLConnection mockedConn;
   private final ByteArrayOutputStream outputStream = 
@@ -88,7 +88,7 @@ public class SenderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructor_null() {
-    new Sender(null);
+    new Sender(null, null);
   }
 
   @Test
@@ -463,7 +463,7 @@ public class SenderTest {
 
   private void assertRequestJsonBody(String...expectedRegIds) throws Exception {
     ArgumentCaptor<String> capturedBody = ArgumentCaptor.forClass(String.class);
-    verify(sender).post(eq(Constants.GCM_SEND_ENDPOINT), eq("application/json"),
+    verify(sender).post(eq(Endpoint.GCM.getUrl()), eq("application/json"),
         capturedBody.capture());
     // parse body
     String body = capturedBody.getValue();
@@ -580,7 +580,7 @@ public class SenderTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPost_noBody() throws Exception {
-    sender.post(Constants.GCM_SEND_ENDPOINT, null);
+    sender.post(Endpoint.GCM.getUrl(), null);
   }
 
   @Test
@@ -589,7 +589,7 @@ public class SenderTest {
     String responseBody = "resp";
     setResponseExpectations(200, responseBody);
     HttpURLConnection response =
-        sender.post(Constants.GCM_SEND_ENDPOINT, requestBody);
+        sender.post(Endpoint.GCM.getUrl(), requestBody);
     assertEquals(requestBody, new String(outputStream.toByteArray()));
     verify(mockedConn).setRequestMethod("POST");
     verify(mockedConn).setFixedLengthStreamingMode(requestBody.length());
@@ -605,7 +605,7 @@ public class SenderTest {
     String responseBody = "resp";
     setResponseExpectations(200, responseBody);
     HttpURLConnection response =
-        sender.post(Constants.GCM_SEND_ENDPOINT, "stuff", requestBody);
+        sender.post(Endpoint.GCM.getUrl(), "stuff", requestBody);
     assertEquals(requestBody, new String(outputStream.toByteArray()));
     verify(mockedConn).setRequestMethod("POST");
     verify(mockedConn).setFixedLengthStreamingMode(requestBody.length());
@@ -628,7 +628,7 @@ public class SenderTest {
     }
     when(mockedConn.getOutputStream()).thenReturn(outputStream);
     doReturn(mockedConn).when(sender)
-        .getConnection(Constants.GCM_SEND_ENDPOINT);
+        .getConnection(Endpoint.GCM.getUrl());
   }
 
   private void doNotSleep() {
@@ -638,7 +638,7 @@ public class SenderTest {
 
   private void assertRequestBody() throws Exception {
     ArgumentCaptor<String> capturedBody = ArgumentCaptor.forClass(String.class);
-    verify(sender).post(eq(Constants.GCM_SEND_ENDPOINT),
+    verify(sender).post(eq(Endpoint.GCM.getUrl()),
         capturedBody.capture());
     // parse body
     String body = capturedBody.getValue();
