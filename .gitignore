@@ -3,3 +3,8 @@ bin
 .project
 .settings/
 target/
+
+#IDEA
+.idea/
+*.iml
+

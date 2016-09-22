@@ -15,7 +15,6 @@
  */
 package com.google.android.gcm.server;
 
-import static com.google.android.gcm.server.Constants.GCM_SEND_ENDPOINT;
 import static com.google.android.gcm.server.Constants.JSON_CANONICAL_IDS;
 import static com.google.android.gcm.server.Constants.JSON_ERROR;
 import static com.google.android.gcm.server.Constants.JSON_FAILURE;
@@ -82,18 +81,23 @@ public class Sender {
 
   private final String key;
 
+  private Endpoint endpoint;
+
   /**
    * Default constructor.
    *
    * @param key API key obtained through the Google API Console.
+   * @param endpoint Targeting endpoint (GCM/FCM)
    */
-  public Sender(String key) {
+  public Sender(String key, Endpoint endpoint) {
     this.key = nonNull(key);
+    this.endpoint = endpoint;
   }
   
-  public Sender(String key, Proxy proxy) {
+  public Sender(String key, Proxy proxy, Endpoint endpoint) {
     this.key = nonNull(key);
     this.proxy = proxy;
+    this.endpoint = endpoint;
   }
 
   /**
@@ -175,7 +179,7 @@ public class Sender {
     }
     String requestBody = body.toString();
     logger.finest("Request body: " + requestBody);
-    HttpURLConnection conn = post(GCM_SEND_ENDPOINT, requestBody);
+    HttpURLConnection conn = post(endpoint.getUrl(), requestBody);
     int status = conn.getResponseCode();
     if (status == 503) {
       logger.fine("GCM service is unavailable");
@@ -366,7 +370,7 @@ public class Sender {
     String requestBody = JSONValue.toJSONString(jsonRequest);
     logger.finest("JSON request: " + requestBody);
     HttpURLConnection conn =
-        post(GCM_SEND_ENDPOINT, "application/json", requestBody);
+        post(endpoint.getUrl(), "application/json", requestBody);
     int status = conn.getResponseCode();
     String responseBody;
     if (status != 200) {
