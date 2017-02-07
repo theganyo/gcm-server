@@ -57,6 +57,7 @@ public final class Message implements Serializable {
   private final String collapseKey;
   private final Boolean delayWhileIdle;
   private final Integer timeToLive;
+  private final Priority priority;
   private final Map<String, String> data;
 
   public static final class Builder {
@@ -67,6 +68,7 @@ public final class Message implements Serializable {
     private String collapseKey;
     private Boolean delayWhileIdle;
     private Integer timeToLive;
+    private Priority priority;
 
     public Builder() {
       this.data = new LinkedHashMap<String, String>();
@@ -97,6 +99,14 @@ public final class Message implements Serializable {
     }
 
     /**
+     * Sets priority
+     */
+    public Builder priority(Priority value) {
+      priority = value;
+      return this;
+    }
+
+    /**
      * Adds a key/value pair to the payload data.
      */
     public Builder addData(String key, String value) {
@@ -121,6 +131,7 @@ public final class Message implements Serializable {
     delayWhileIdle = builder.delayWhileIdle;
     data = Collections.unmodifiableMap(builder.data);
     timeToLive = builder.timeToLive;
+    priority = builder.priority;
   }
 
   /**
@@ -145,6 +156,13 @@ public final class Message implements Serializable {
   }
 
   /**
+   * Gets priority.
+   */
+  public Priority getPriority() {
+    return priority;
+  }
+
+  /**
    * Gets the payload data, which is immutable.
    */
   public Map<String, String> getData() {
@@ -162,6 +180,9 @@ public final class Message implements Serializable {
     }
     if (delayWhileIdle != null) {
       builder.append("delayWhileIdle=").append(delayWhileIdle).append(", ");
+    }
+    if (priority != null) {
+      builder.append("priority=").append(priority.nameLowerCase()).append(", ");
     }
     if (!data.isEmpty()) {
       builder.append("data: {");

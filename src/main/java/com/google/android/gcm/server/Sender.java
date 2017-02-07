@@ -27,6 +27,7 @@ import static com.google.android.gcm.server.Constants.JSON_SUCCESS;
 import static com.google.android.gcm.server.Constants.PARAM_COLLAPSE_KEY;
 import static com.google.android.gcm.server.Constants.PARAM_DELAY_WHILE_IDLE;
 import static com.google.android.gcm.server.Constants.PARAM_PAYLOAD_PREFIX;
+import static com.google.android.gcm.server.Constants.PARAM_PRIORITY;
 import static com.google.android.gcm.server.Constants.PARAM_REGISTRATION_ID;
 import static com.google.android.gcm.server.Constants.PARAM_TIME_TO_LIVE;
 import static com.google.android.gcm.server.Constants.TOKEN_CANONICAL_REG_ID;
@@ -171,6 +172,10 @@ public class Sender {
     Integer timeToLive = message.getTimeToLive();
     if (timeToLive != null) {
       addParameter(body, PARAM_TIME_TO_LIVE, Integer.toString(timeToLive));
+    }
+    Priority priority = message.getPriority();
+    if (priority != null) {
+      addParameter(body, PARAM_PRIORITY, priority.nameLowerCase());
     }
     for (Entry<String, String> entry : message.getData().entrySet()) {
       String key = PARAM_PAYLOAD_PREFIX + entry.getKey();

@@ -58,6 +58,7 @@ public class SenderTest {
   private final String regId = "15;16";
   private final String collapseKey = "collapseKey";
   private final boolean delayWhileIdle = true;
+  private final Priority priority = Priority.HIGH;
   private final int retries = 42;
   private final int ttl = 108;
   private final String authKey = "4815162342";
@@ -68,6 +69,7 @@ public class SenderTest {
           .collapseKey(collapseKey)
           .delayWhileIdle(delayWhileIdle)
           .timeToLive(ttl)
+          .priority(priority)
           .addData("k1", "v1")
           .addData("k2", "v2")
           .addData("k3", "v3")
@@ -648,11 +650,12 @@ public class SenderTest {
       params.put(split[0], split[1]);
     }
     // check parameters
-    assertEquals(7, params.size());
+    assertEquals(8, params.size());
     assertParameter(params, "registration_id", regId);
     assertParameter(params, "collapse_key", collapseKey);
     assertParameter(params, "delay_while_idle", delayWhileIdle ? "1" : "0");
     assertParameter(params, "time_to_live", "" + ttl);
+    assertParameter(params, "priority", Priority.HIGH.nameLowerCase());
     assertParameter(params, "data.k1", "v1");
     assertParameter(params, "data.k2", "v2");
     assertParameter(params, "data.k3", "v3");
