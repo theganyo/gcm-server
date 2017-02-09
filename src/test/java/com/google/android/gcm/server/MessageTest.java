@@ -49,6 +49,7 @@ public class MessageTest {
         .collapseKey("108")
         .delayWhileIdle(true)
         .timeToLive(42)
+        .priority(Priority.HIGH)
         .addData("k1", "old value")
         .addData("k1", "v1")
         .addData("k2", "v2")
@@ -56,6 +57,7 @@ public class MessageTest {
     assertEquals("108", message.getCollapseKey());
     assertTrue(message.isDelayWhileIdle());
     assertEquals(42, message.getTimeToLive().intValue());
+    assertEquals(Priority.HIGH, message.getPriority());
     Map<String, String> data = message.getData();
     assertEquals(2, data.size());
     assertEquals("v1", data.get("k1"));
@@ -66,6 +68,7 @@ public class MessageTest {
     assertTrue(toString.contains("delayWhileIdle=true"));
     assertTrue(toString.contains("k1=v1"));
     assertTrue(toString.contains("k2=v2"));
+    assertTrue(toString.contains("priority=high"));
   }
 
   @Test(expected = UnsupportedOperationException.class)
