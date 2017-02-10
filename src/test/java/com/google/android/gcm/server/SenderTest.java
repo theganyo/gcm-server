@@ -71,6 +71,9 @@ public class SenderTest {
           .addData("k1", "v1")
           .addData("k2", "v2")
           .addData("k3", "v3")
+          .addParameter("dry_run", "false")
+          .addParameter("dry_run", "true")
+          .addParameter("priority", "high")
           .build();
 
   // creates a Mockito Spy so we can stub internal methods
@@ -478,6 +481,9 @@ public class SenderTest {
     assertEquals("v1", payload.get("k1"));
     assertEquals("v2", payload.get("k2"));
     assertEquals("v3", payload.get("k3"));
+
+    assertEquals("true", json.get("dry_run"));
+    assertEquals("high", json.get("priority"));
     JSONArray actualRegIds = (JSONArray) json.get("registration_ids");
     assertEquals("Wrong number of regIds",
         expectedRegIds.length, actualRegIds.size());
@@ -648,7 +654,7 @@ public class SenderTest {
       params.put(split[0], split[1]);
     }
     // check parameters
-    assertEquals(7, params.size());
+    assertEquals(9, params.size());
     assertParameter(params, "registration_id", regId);
     assertParameter(params, "collapse_key", collapseKey);
     assertParameter(params, "delay_while_idle", delayWhileIdle ? "1" : "0");
@@ -656,6 +662,8 @@ public class SenderTest {
     assertParameter(params, "data.k1", "v1");
     assertParameter(params, "data.k2", "v2");
     assertParameter(params, "data.k3", "v3");
+    assertParameter(params, "dry_run", "true");
+    assertParameter(params, "priority", "high");
   }
 
   static void assertParameter(Map<String, String> params, String name,

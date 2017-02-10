@@ -52,6 +52,9 @@ public class MessageTest {
         .addData("k1", "old value")
         .addData("k1", "v1")
         .addData("k2", "v2")
+        .addParameter("dry_run", "false")
+        .addParameter("dry_run", "true")
+        .addParameter("priority", "high")
         .build();
     assertEquals("108", message.getCollapseKey());
     assertTrue(message.isDelayWhileIdle());
@@ -66,6 +69,8 @@ public class MessageTest {
     assertTrue(toString.contains("delayWhileIdle=true"));
     assertTrue(toString.contains("k1=v1"));
     assertTrue(toString.contains("k2=v2"));
+    assertTrue(toString.contains("dry_run=true"));
+    assertTrue(toString.contains("priority=high"));
   }
 
   @Test(expected = UnsupportedOperationException.class)

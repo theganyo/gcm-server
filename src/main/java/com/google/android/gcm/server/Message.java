@@ -41,7 +41,7 @@ import java.util.Map;
  *    .build();
  * </pre></code>
  *
- * <strong>Message with optional attributes and payload data:</strong>
+ * <strong>Message with optional attributes, payload data and custom parameters:</strong>
  * <pre><code>
  * Message message = new Message.Builder()
  *    .collapseKey(collapseKey)
@@ -49,6 +49,8 @@ import java.util.Map;
  *    .delayWhileIdle(true)
  *    .addData("key1", "value1")
  *    .addData("key2", "value2")
+ *    .addParameter("dry_run", "true")
+ *    .addParameter("priority", "high")
  *    .build();
  * </pre></code>
  */
@@ -58,6 +60,7 @@ public final class Message implements Serializable {
   private final Boolean delayWhileIdle;
   private final Integer timeToLive;
   private final Map<String, String> data;
+  private final Map<String, String> parameters;
 
   public static final class Builder {
 
@@ -67,9 +70,11 @@ public final class Message implements Serializable {
     private String collapseKey;
     private Boolean delayWhileIdle;
     private Integer timeToLive;
+    private final Map<String, String> parameters;
 
     public Builder() {
       this.data = new LinkedHashMap<String, String>();
+      this.parameters = new LinkedHashMap<String, String>();
     }
 
     /**
@@ -110,6 +115,20 @@ public final class Message implements Serializable {
       return this;
     }
 
+    /**
+     * Adds a key/value pair to the parameter map.
+     */
+    public Builder addParameter(String key, String value) {
+      parameters.put(key, value);
+      return this;
+    }
+
+    public Builder setParameters(Map<String,String> parameters) {
+      this.parameters.clear();
+      this.parameters.putAll(parameters);
+      return this;
+    }
+
     public Message build() {
       return new Message(this);
     }
@@ -121,6 +140,7 @@ public final class Message implements Serializable {
     delayWhileIdle = builder.delayWhileIdle;
     data = Collections.unmodifiableMap(builder.data);
     timeToLive = builder.timeToLive;
+    parameters = Collections.unmodifiableMap(builder.parameters);
   }
 
   /**
@@ -151,6 +171,13 @@ public final class Message implements Serializable {
     return data;
   }
 
+  /**
+   * Get the custom parameters, which is immutable.
+   */
+  public Map<String, String> getParameters() {
+    return parameters;
+  }
+
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder("Message(");
@@ -168,6 +195,15 @@ public final class Message implements Serializable {
       for (Map.Entry<String, String> entry : data.entrySet()) {
         builder.append(entry.getKey()).append("=").append(entry.getValue())
             .append(",");
+      }
+      builder.delete(builder.length() - 1, builder.length());
+      builder.append("}");
+    }
+    if (!parameters.isEmpty()) {
+      builder.append("parameters: {");
+      for (Map.Entry<String, String> entry : parameters.entrySet()) {
+        builder.append(entry.getKey()).append("=").append(entry.getValue())
+                .append(",");
       }
       builder.delete(builder.length() - 1, builder.length());
       builder.append("}");

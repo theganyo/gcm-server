@@ -177,6 +177,9 @@ public class Sender {
       String value = entry.getValue();
       addParameter(body, key, URLEncoder.encode(value, UTF8));
     }
+    for (Entry<String, String> entry : message.getParameters().entrySet()) {
+      addParameter(body, entry.getKey(), URLEncoder.encode(entry.getValue(), UTF8));
+    }
     String requestBody = body.toString();
     logger.finest("Request body: " + requestBody);
     HttpURLConnection conn = post(endpoint.getUrl(), requestBody);
@@ -366,6 +369,12 @@ public class Sender {
     Map<String, String> payload = message.getData();
     if (!payload.isEmpty()) {
       jsonRequest.put(JSON_PAYLOAD, payload);
+    }
+    Map<String, String> parameters = message.getParameters();
+    if (!parameters.isEmpty()) {
+      for (Map.Entry<String, String> entry : parameters.entrySet()) {
+        jsonRequest.put(entry.getKey(), entry.getValue());
+      }
     }
     String requestBody = JSONValue.toJSONString(jsonRequest);
     logger.finest("JSON request: " + requestBody);
